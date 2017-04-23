@@ -178,7 +178,7 @@ flatten_build() {
   
   mv "${APP_DIR}" "${STAGE_DIR}" &&
   rm -rf "${BUILD_DIR}" &&
-  mv "${STAGE}/$(basename "$APP_BASE")" "${BUILD_DIR}"
+  mv "${STAGE_DIR}/$(basename "$APP_BASE")" "${BUILD_DIR}"
 }
 
 header "Flattening build"
