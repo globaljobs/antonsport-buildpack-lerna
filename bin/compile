@@ -175,7 +175,6 @@ cache_build | output "$LOG_FILE"
 
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
-  ls -la "${BUILD_DIR}/export"
   ls -la "${BUILD_DIR}/.profile.d"
   
   mv "${APP_DIR}" "${STAGE_DIR}" &&
