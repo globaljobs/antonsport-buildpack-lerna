@@ -176,10 +176,9 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
   
-  mv "${APP_DIR}" "${STAGE_DIR}" &&
-  mv "$BUILD_DIR/.heroku" "${STAGE_DIR}"
+  mv "$BUILD_DIR/.heroku" "${APP_DIR}" "${STAGE_DIR}" &&
   rm -rf "${BUILD_DIR}" &&
-  mv "${STAGE_DIR}/$(basename "$APP_BASE")" "${BUILD_DIR}"
+  mv "${STAGE_DIR}/.heroku" "${STAGE_DIR}/$(basename "$APP_BASE")" "${BUILD_DIR}"
 }
 
 header "Flattening build"
