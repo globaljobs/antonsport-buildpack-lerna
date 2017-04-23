@@ -154,7 +154,8 @@ header "Building dependencies"
 build_dependencies | output "$LOG_FILE"
 
 cache_build() {
-  local cache_directories=$(get_cache_directories)
+  # local cache_directories=$(get_cache_directories)
+  local cache_directories="node_modules $COMMON_DIR/node_modules $APP_DIR/node_modules"
 
   echo "Clearing previous node cache"
   clear_cache
@@ -177,7 +178,8 @@ flatten_build() {
   STAGE_DIR="$(mktemp -d)"
   
   mv "$APP_DIR" "$STAGE_DIR" &&
-  mv "$BUILD_DIR/.heroku" "$BUILD_DIR/.profile.d" "$STAGE_DIR" &&
+  mv "$BUILD_DIR/.heroku" "$STAGE_DIR" &&
+  mv "$BUILD_DIR/.profile.d" "$STAGE_DIR" &&
   rm -rf "$BUILD_DIR" &&
   mv "$STAGE_DIR/$(basename "$APP_BASE")" "$BUILD_DIR"
   mv "$STAGE_DIR/.heroku" "$STAGE_DIR/.profile.d" "$BUILD_DIR"
