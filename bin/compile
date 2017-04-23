@@ -175,6 +175,7 @@ cache_build | output "$LOG_FILE"
 
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
+  ls -la "${BUILD_DIR}"
   
   mv "${APP_DIR}" "${STAGE_DIR}" &&
   mv "$BUILD_DIR/.heroku" "${STAGE_DIR}" &&
@@ -184,7 +185,8 @@ flatten_build() {
 }
 
 header "Flattening build"
-flatten_build | output "$LOG_FILE"
+flatten_build
+#| output "$LOG_FILE"
 
 summarize_build() {
   if $NODE_VERBOSE; then
