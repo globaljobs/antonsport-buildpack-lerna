@@ -19,6 +19,9 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
+COMMON_DIR="$BUILD_DIR/packages/antonsport-common"
+APP_DIR="$BUILD_DIR/packages/antonsport-storefront"
+
 mkdir -p "$BUILD_DIR/.heroku/node/"
 cd $BUILD_DIR
 export PATH="$BUILD_DIR/.heroku/node/bin:$BUILD_DIR/.heroku/yarn/bin":$PATH
@@ -135,7 +138,8 @@ restore_cache | output "$LOG_FILE"
 build_dependencies() {
   run_if_present 'heroku-prebuild'
   if $YARN; then
-    yarn_node_modules "$BUILD_DIR"
+    yarn_node_modules "$COMMON_DIR"
+    yarn_node_modules "$APP_DIR"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
     npm_rebuild "$BUILD_DIR"
@@ -168,6 +172,17 @@ cache_build() {
 
 header "Caching build"
 cache_build | output "$LOG_FILE"
+
+flatten_build() {
+  STAGE_DIR="$(mktemp -d)"
+  
+  mv "${APP_DIR}" "${STAGE_DIR}" &&
+  rm -rf "${BUILD_DIR}" &&
+  mv "${STAGE}/$(basename "$APP_BASE")" "${BUILD_DIR}"
+}
+
+header "Flattening build"
+flatten_build | output "$LOG_FILE"
 
 summarize_build() {
   if $NODE_VERBOSE; then
