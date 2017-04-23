@@ -119,7 +119,8 @@ restore_cache() {
     fi
   fi
   if [ "$cache_status" == "valid" ]; then
-    local cache_directories=$(get_cache_directories)
+    # local cache_directories=$(get_cache_directories)
+    local cache_directories="node_modules $COMMON_DIR/node_modules $APP_DIR/node_modules"
     if [ "$cache_directories" == "" ]; then
       echo "Loading 2 from cacheDirectories (default):"
       restore_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$DEFAULT_CACHE"
