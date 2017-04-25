@@ -20,9 +20,6 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
-COMMON_DIR="$BUILD_DIR/packages/$COMMON_PACKAGE"
-APP_DIR="$BUILD_DIR/packages/$LERNA_PACKAGE"
-
 mkdir -p "$BUILD_DIR/.heroku/node/"
 cd $BUILD_DIR
 export PATH="$BUILD_DIR/.heroku/node/bin:$BUILD_DIR/.heroku/yarn/bin":$PATH
@@ -76,6 +73,10 @@ create_env() {
 header "Creating runtime environment"
 create_env # can't pipe the whole thing because piping causes subshells, preventing exports
 list_node_config | output "$LOG_FILE"
+
+# We can't set these until the environment has been created
+COMMON_DIR="$BUILD_DIR/packages/$COMMON_PACKAGE"
+APP_DIR="$BUILD_DIR/packages/$LERNA_PACKAGE"
 
 install_bins() {
   local node_engine=$(read_json "$APP_DIR/package.json" ".engines.node")
