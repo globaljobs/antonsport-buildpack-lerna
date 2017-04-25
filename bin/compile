@@ -11,6 +11,7 @@ unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 ### Constants
 
 DEFAULT_CACHE="node_modules bower_components"
+COMMON_PACKAGE="antonsport-common"
 
 ### Configure directories
 
@@ -19,8 +20,8 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
-COMMON_DIR="$BUILD_DIR/packages/antonsport-common"
-APP_DIR="$BUILD_DIR/packages/antonsport-storefront"
+COMMON_DIR="$BUILD_DIR/packages/$COMMON_PACKAGE"
+APP_DIR="$BUILD_DIR/packages/$LERNA_PACKAGE"
 
 mkdir -p "$BUILD_DIR/.heroku/node/"
 cd $BUILD_DIR
@@ -178,11 +179,10 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
   
-  mv "$APP_DIR" "$STAGE_DIR" &&
-  mv "$BUILD_DIR/.heroku" "$BUILD_DIR/.profile.d" "$STAGE_DIR" &&
-  rm -rf "$BUILD_DIR" &&
-  mv "$STAGE_DIR/$(basename "$APP_BASE")" "$BUILD_DIR" &&
-  mv "$STAGE_DIR/.heroku" "$STAGE_DIR/.profile.d" "$BUILD_DIR"
+  mv "$APP_DIR" "$STAGE_DIR"
+  mv "$COMMON_DIR/node_modules" "$STAGE_DIR/node_modules/$COMMON_PACKAGE"
+  rm -rf "$BUILD_DIR/*"
+  mv "$STAGE_DIR/$LERNA_PACKAGE/*" "$BUILD_DIR"
 }
 
 header "Flattening build"
