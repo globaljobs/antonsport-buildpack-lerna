@@ -185,7 +185,7 @@ flatten_build() {
   STAGE_DIR="$(mktemp -d)"
   
   mv "$APP_DIR" "$STAGE_DIR"
-  # mv "$COMMON_DIR/node_modules" "$STAGE_DIR/node_modules/$COMMON_PACKAGE"
+  mv "$COMMON_DIR/node_modules" "$STAGE_DIR/node_modules/$COMMON_PACKAGE"
   rm -rf "$BUILD_DIR/*"
   mv "$STAGE_DIR/$LERNA_PACKAGE/*" "$BUILD_DIR"
 }
