@@ -141,9 +141,9 @@ restore_cache | output "$LOG_FILE"
 build_dependencies() {
   run_if_present 'heroku-prebuild'
   if $YARN; then
-    (cd "$BUILD_DIR" && yarn install --verbose --pure-lockfile --ignore-engines --modules-folder "$BUILD_DIR/node_modules")
-    (cd "$COMMON_DIR" && yarn install --verbose --pure-lockfile --ignore-engines --modules-folder "$COMMON_DIR/node_modules")
-    (cd "$APP_DIR" && yarn install --verbose --pure-lockfile --ignore-engines --modules-folder "$APP_DIR/node_modules")
+    (cd "$BUILD_DIR" && yarn install --pure-lockfile --ignore-engines --modules-folder "$BUILD_DIR/node_modules")
+    (cd "$COMMON_DIR" && yarn install --pure-lockfile --ignore-engines --modules-folder "$COMMON_DIR/node_modules")
+    (cd "$APP_DIR" && yarn install --pure-lockfile --ignore-engines --modules-folder "$APP_DIR/node_modules")
     # yarn_node_modules "$BUILD_DIR"
     # yarn_node_modules "$APP_DIR"
     # yarn_node_modules "$COMMON_DIR"
