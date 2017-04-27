@@ -31,6 +31,7 @@ yarn_node_modules() {
   echo "Installing node modules (yarn.lock)"
   cd "$build_dir"
   yarn install --pure-lockfile --ignore-engines 2>&1
+  run_if_present 'heroku-postbuild'
 }
 
 npm_node_modules() {
