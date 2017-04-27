@@ -146,7 +146,11 @@ build_dependencies() {
   else
     npm_node_modules "$BUILD_DIR"
   fi
-  run_if_present 'heroku-postbuild'
+
+  run_if_present "$BUILD_DIR" 'heroku-postbuild'
+  run_if_present "$BUILD_DIR/packages/$COMMON_PACKAGE" 'heroku-postbuild'
+  run_if_present "$BUILD_DIR/packages/$LERNA_PACKAGE" 'heroku-postbuild'
+
   # TODO: run_if_present 'build'
 }
 
