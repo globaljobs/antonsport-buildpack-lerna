@@ -12,18 +12,14 @@ list_dependencies() {
 }
 
 run_if_present() {
-  local build_dir=${1:-}
-  local script_name=${2:-}
-
-  local has_script=$(read_json "$build_dir/package.json" ".scripts[\"$script_name\"]")
+  local script_name=${1:-}
+  local has_script=$(read_json "$BUILD_DIR/package.json" ".scripts[\"$script_name\"]")
   if [ -n "$has_script" ]; then
     if $YARN; then
       echo "Running $script_name (yarn)"
-      cd "$build_dir"
       yarn run "$script_name"
     else
       echo "Running $script_name"
-      cd "$build_dir"
       npm run "$script_name" --if-present
     fi
   fi
