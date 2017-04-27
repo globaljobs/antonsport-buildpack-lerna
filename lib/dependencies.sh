@@ -13,16 +13,13 @@ list_dependencies() {
 
 run_if_present() {
   local script_name=${1:-}
-  local build_dir=${2:-$BUILD_DIR}
-  local has_script=$(read_json "$build_dir/package.json" ".scripts[\"$script_name\"]")
+  local has_script=$(read_json "$BUILD_DIR/package.json" ".scripts[\"$script_name\"]")
   if [ -n "$has_script" ]; then
     if $YARN; then
       echo "Running $script_name (yarn)"
-      cd "$build_dir"
       yarn run "$script_name"
     else
       echo "Running $script_name"
-      cd "$build_dir"
       npm run "$script_name" --if-present
     fi
   fi
@@ -34,7 +31,6 @@ yarn_node_modules() {
   echo "Installing node modules (yarn.lock)"
   cd "$build_dir"
   yarn install --pure-lockfile --ignore-engines 2>&1
-  run_if_present 'heroku-postbuild' $build_dir
 }
 
 npm_node_modules() {

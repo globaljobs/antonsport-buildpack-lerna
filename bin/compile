@@ -146,7 +146,7 @@ build_dependencies() {
   else
     npm_node_modules "$BUILD_DIR"
   fi
-  # run_if_present 'heroku-postbuild'
+  run_if_present 'heroku-postbuild'
   # TODO: run_if_present 'build'
 }
 
