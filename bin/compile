@@ -74,10 +74,6 @@ header "Creating runtime environment"
 create_env # can't pipe the whole thing because piping causes subshells, preventing exports
 list_node_config | output "$LOG_FILE"
 
-# We can't set these until the environment has been created
-COMMON_DIR="$BUILD_DIR/packages/$COMMON_PACKAGE"
-APP_DIR="$BUILD_DIR/packages/$LERNA_PACKAGE"
-
 install_bins() {
   local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
   local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
@@ -142,8 +138,8 @@ build_dependencies() {
   if $YARN; then
     # The order here is important to make sure common is built before being copied over to the app
     yarn_node_modules "$BUILD_DIR"
-    yarn_node_modules "$COMMON_DIR"
-    yarn_node_modules "$APP_DIR"
+    yarn_node_modules "$BUILD_DIR/packages/$COMMON_PACKAGE"
+    yarn_node_modules "$BUILD_DIR/packages/$LERNA_PACKAGE"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
     npm_rebuild "$BUILD_DIR"
@@ -180,9 +176,9 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
 
-  mv $APP_DIR $STAGE_DIR
+  mv $BUILD_DIR/packages/$LERNA_PACKAGE $STAGE_DIR
   rm -rf $BUILD_DIR/*
-  mv $STAGE_DIR/* $BUILD_DIR/
+  mv $STAGE_DIR/$LERNA_PACKAGE/* $BUILD_DIR/
 }
 
 header "Flattening build"
