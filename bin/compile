@@ -79,10 +79,10 @@ COMMON_DIR="$BUILD_DIR/packages/$COMMON_PACKAGE"
 APP_DIR="$BUILD_DIR/packages/$LERNA_PACKAGE"
 
 install_bins() {
-  local node_engine=$(read_json "$APP_DIR/package.json" ".engines.node")
-  local iojs_engine=$(read_json "$APP_DIR/package.json" ".engines.iojs")
-  local npm_engine=$(read_json "$APP_DIR/package.json" ".engines.npm")
-  local yarn_engine=$(read_json "$APP_DIR/package.json" ".engines.yarn")
+  local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
+  local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
+  local npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
+  local yarn_engine=$(read_json "$BUILD_DIR/package.json" ".engines.yarn")
 
   if [ -n "$iojs_engine" ]; then
     echo "engines.iojs (package.json):  $iojs_engine (iojs)"
@@ -121,8 +121,7 @@ restore_cache() {
     fi
   fi
   if [ "$cache_status" == "valid" ]; then
-    # local cache_directories=$(get_cache_directories)
-    local cache_directories="node_modules $COMMON_DIR/node_modules $APP_DIR/node_modules"
+    local cache_directories=$(get_cache_directories)
     if [ "$cache_directories" == "" ]; then
       echo "Loading 2 from cacheDirectories (default):"
       restore_cache_directories "$BUILD_DIR" "$CACHE_DIR" "$DEFAULT_CACHE"
@@ -141,12 +140,10 @@ restore_cache | output "$LOG_FILE"
 build_dependencies() {
   run_if_present 'heroku-prebuild'
   if $YARN; then
-    # yarn_node_modules "$BUILD_DIR"
-    # yarn_node_modules "$APP_DIR"
-    # yarn_node_modules "$COMMON_DIR"
-    npm_node_modules "$BUILD_DIR"
-    npm_node_modules "$COMMON_DIR"
-    npm_node_modules "$APP_DIR"
+    # The order here is important to make sure common is built before being copied over to the app
+    yarn_node_modules "$BUILD_DIR"
+    yarn_node_modules "$COMMON_DIR"
+    yarn_node_modules "$APP_DIR"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
     npm_rebuild "$BUILD_DIR"
@@ -161,8 +158,7 @@ header "Building dependencies"
 build_dependencies | output "$LOG_FILE"
 
 cache_build() {
-  # local cache_directories=$(get_cache_directories)
-  local cache_directories="node_modules $COMMON_DIR/node_modules $APP_DIR/node_modules"
+  local cache_directories=$(get_cache_directories)
 
   echo "Clearing previous node cache"
   clear_cache
@@ -184,11 +180,9 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
 
-  set -x
-  mv "$APP_DIR" "$STAGE_DIR"
-  mv "$COMMON_DIR/node_modules" "$STAGE_DIR/node_modules/$COMMON_PACKAGE"
-  rm -rf "$BUILD_DIR/*"
-  mv "$STAGE_DIR/$LERNA_PACKAGE/*" "$BUILD_DIR"
+  mv $APP_DIR $STAGE_DIR
+  rm -rf $BUILD_DIR/*
+  mv $STAGE_DIR/* $BUILD_DIR/
 }
 
 header "Flattening build"
