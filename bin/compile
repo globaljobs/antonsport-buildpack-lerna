@@ -11,7 +11,6 @@ unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 ### Constants
 
 DEFAULT_CACHE="node_modules bower_components"
-COMMON_PACKAGE="antonsport-common"
 
 ### Configure directories
 
@@ -138,7 +137,6 @@ build_dependencies() {
   if $YARN; then
     # The order here is important to make sure common is built before being copied over to the app
     yarn_node_modules "$BUILD_DIR"
-    yarn_node_modules "$BUILD_DIR/packages/$COMMON_PACKAGE"
     yarn_node_modules "$BUILD_DIR/packages/$LERNA_PACKAGE"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
