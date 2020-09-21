@@ -11,6 +11,8 @@ unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 ### Constants
 
 DEFAULT_CACHE="node_modules bower_components"
+SCRAPER_PACKAGE="scraper"
+WEB_PACKAGE="scraper"
 
 ### Configure directories
 
@@ -137,7 +139,8 @@ build_dependencies() {
   if $YARN; then
     # The order here is important to make sure common is built before being copied over to the app
     yarn_node_modules "$BUILD_DIR"
-    yarn_node_modules "$BUILD_DIR/packages/$LERNA_PACKAGE"
+    yarn_node_modules "$BUILD_DIR/packages/$SCRAPER_PACKAGE"
+    yarn_node_modules "$BUILD_DIR/packages/$WEB_PACKAGE"
   elif $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
     npm_rebuild "$BUILD_DIR"
@@ -174,9 +177,11 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
 
-  mv $BUILD_DIR/packages/$LERNA_PACKAGE $STAGE_DIR
+  mv $BUILD_DIR/packages/$SCRAPER_PACKAGE $STAGE_DIR
+  mv $BUILD_DIR/packages/$WEB_PACKAGE $STAGE_DIR
   rm -rf $BUILD_DIR/*
-  mv $STAGE_DIR/$LERNA_PACKAGE/* $BUILD_DIR/
+  mv $STAGE_DIR/$SCRAPER_PACKAGE/* $BUILD_DIR/
+  mv $STAGE_DIR/$WEB_PACKAGE/* $BUILD_DIR/
 }
 
 header "Flattening build"
