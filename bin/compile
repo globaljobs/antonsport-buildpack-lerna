@@ -177,9 +177,9 @@ cache_build | output "$LOG_FILE"
 flatten_build() {
   STAGE_DIR="$(mktemp -d)"
 
-  # mv $BUILD_DIR/packages/$LERNA_PACKAGE $STAGE_DIR
-  # rm -rf $BUILD_DIR/*
-  # mv $STAGE_DIR/$LERNA_PACKAGE/* $BUILD_DIR/
+  mv $BUILD_DIR/packages/$WEB_PACKAGE $STAGE_DIR
+  rm -rf $BUILD_DIR/*
+  mv $STAGE_DIR/$WEB_PACKAGE/* $BUILD_DIR/
 }
 
 header "Flattening build"
